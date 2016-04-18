@@ -1,0 +1,76 @@
+# Conky configuration
+background yes
+use_xft yes
+xftfont DejaVu Sans Mono:size=10
+xftalpha 1
+out_to_console no
+update_interval 2
+total_run_times 0
+own_window yes
+own_window_type normal
+#own_window_type desktop
+#own_window_transparent yes
+own_window_colour 000000
+own_window_argb_visual yes
+own_window_argb_value 110
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+draw_shades yes
+draw_outline no
+draw_borders no
+draw_graph_borders yes
+#stippled_borders 5
+#border_margin 4
+#border_width 1
+default_color e5e5e5
+default_shade_color 404040
+default_outline_color black
+minimum_size 400 120
+maximum_width 510
+alignment bl
+#gap_x 40
+gap_y 40
+no_buffers no
+uppercase no
+#cpu_avg_samples 2
+#net_avg_samples 2
+override_utf8_locale yes
+use_spacer no
+short_units yes
+
+TEXT
+
+$hr 
+${alignc}${font DejaVu Sans Mono:style=Bold:size=20}${color orange}UTC${color}${font} 
+$hr
+${goto 50}${font GE Inspira:size=110}${utime %H:%M}${font}
+${font Impact:size=12}${alignc}${color orange}${utime %A}, ${utime %B} ${utime %e}, ${utime %Y}${font}${color} 
+$hr
+
+$hr
+${goto 200}${font DejaVu Sans Mono:style=Bold:size=20}${color orange}Odessa${color}${font}
+$hr
+${goto 50}${font GE Inspira:size=110}${tztime Europe/Kiev %H:%M}${font}
+${font Impact:size=12}${alignc}${color orange}${tztime Europe/Kiev %A}, ${tztime Europe/Kiev %B} ${tztime Europe/Kiev %e}, ${tztime Europe/Kiev %Y}${font}${color} 
+$hr
+
+$hr
+${goto 120}${font DejaVu Sans Mono:style=Bold:size=20}${color orange}Saint-Petersburg${color}${font}
+$hr
+${goto 50}${font GE Inspira:size=110}${tztime Europe/Moscow %H:%M}${font}
+${font Impact:size=12}${alignc}${color orange}${tztime Europe/Moscow %A}, ${tztime Europe/Moscow %B} ${tztime Europe/Moscow %e}, ${tztime Europe/Moscow %Y}${font}${color} 
+$hr
+
+$hr
+${goto 200}${font DejaVu Sans Mono:style=Bold:size=20}${color orange}Belmont${color}${font}
+$hr
+${goto 50}${font GE Inspira:size=110}${tztime America/Los_Angeles %H:%M}${font}
+${font Impact:size=12}${alignc}${color orange}${tztime America/Los_Angeles %A}, ${tztime America/Los_Angeles %B} ${tztime America/Los_Angeles %e}, ${tztime America/Los_Angeles %Y}${font}${color} 
+$hr
+
+
+#${voffset 0}${offset 1000}${font DejaVu Sans Mono:style=Bold:size=10}${execpi 60 DJS=`date +%_d`; ncal -C -h | sed s/"\(^\|[^0-9]\)$DJS"'\b'/'\1${color orange}'"$DJS"'$color'/}${font}
+#$hr
+#${color orange}System${color}:${fs_used /}/${fs_size /}       ${color orange}Home${color}:${fs_used /home}/${fs_size /home}   ${alignr}${color orange}Data${color}:${fs_used /media/Data}/${fs_size /media/Data}
+#$hr
+#${alignc}${exec deadbeef --nowplaying "%a - %t"}
