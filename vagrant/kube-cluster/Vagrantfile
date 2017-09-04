@@ -1,0 +1,75 @@
+$script = <<SCRIPT
+echo installing docker
+sudo apt-get update
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo apt-key fingerprint 0EBFCD88
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get install docker-ce -y
+
+echo Installing kubectl
+curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin/kubectl
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+
+
+echo installing kubelet and kubeadm
+sudo apt-get update && sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm
+
+SCRIPT
+
+
+$script_master = <<SCRIPT
+echo master specific
+sudo kubeadm init --apiserver-advertise-address=192.168.33.11 --pod-network-cidr=10.255.0.0/16 --token=test12.16symbolsneed123
+mkdir ~/.kube
+sudo cp /etc/kubernetes/admin.conf ~/.kube/config
+kubectl apply -f http://docs.projectcalico.org/v2.4/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml
+kubectl taint nodes --all node-role.kubernetes.io/master-
+
+SCRIPT
+	
+$script_node1 = <<SCRIPT
+echo node1 specific 
+kubeadm join --token test12.16symbolsneed123 192.168.33.11:6443
+SCRIPT
+
+
+Vagrant.configure("2") do |config|
+      config.vm.synced_folder './shared', '/shared'
+      config.vm.provision "shell", inline: $script
+      config.vm.provider "virtualbox" do |v|
+			v.memory = 2048
+	   end
+
+
+
+        config.vm.define "master" do |master|
+                master.vm.hostname = "master"
+                master.vm.box = "ubuntu/zesty64"
+                master.vm.network :private_network, ip: "192.168.33.11"
+                master.vm.provision "shell", inline: $script_master
+        end
+        config.vm.define "node1" do |node1|
+                node1.vm.box = "ubuntu/zesty64"
+                node1.vm.hostname = "node1"
+                node1.vm.network :private_network, ip: "192.168.33.10"
+                node1.vm.provision "shell", inline: $script_node1
+
+        end
+
+end
+
